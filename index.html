@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeStart</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;700&display=swap"
+        rel="stylesheet">
+    <link href="templatemo-electric-xtra.css" rel="stylesheet">
+    <link rel="shortcut icon" href="./logo/logo.svg" type="image/x-icon">
+    <style>
+        .chat-container {
+            width: 300px;
+            height: 600px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #FF5E00 0%, #00B2FF 100%);
+            color: white;
+            padding: 1.2rem;
+            border-radius: 15px 15px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-controls button {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: opacity 0.2s;
+        }
+
+        .header-controls button:hover {
+            opacity: 0.8;
+        }
+
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .user-message {
+            background: #00B2FF;
+            color: white;
+            align-self: flex-end;
+            border-radius: 15px 15px 0 15px;
+        }
+
+        .bot-message {
+            background: #FF5E00;
+            color: #fff;
+            align-self: flex-start;
+            border-radius: 15px 15px 15px 0;
+        }
+
+        .typing-indicator {
+            display: inline-block;
+            padding: 10px;
+        }
+
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #999;
+            margin-right: 4px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0);
+            }
+
+            30% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .input-container {
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 5px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #user-input:focus {
+            border-color: #FF5E00;
+        }
+
+        #send-btn {
+            background: #00B2FF;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #send-btn:hover {
+            background: #FF5E00;
+        }
+
+        #send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <!-- Animated Grid Background -->
+    <div class="grid-bg"></div>
+    <div class="gradient-overlay"></div>
+    <div class="scanlines"></div>
+
+    <!-- Animated Shapes -->
+    <div class="shapes-container">
+        <div class="shape shape-circle"></div>
+        <div class="shape shape-triangle"></div>
+        <div class="shape shape-square"></div>
+    </div>
+
+    <!-- Floating Particles -->
+    <div id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#home" class="logo-link">
+                <svg class="logo-svg" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#FF5E00;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#00B2FF;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                    <polygon points="20,2 38,14 38,26 20,38 2,26 2,14" fill="none" stroke="url(#logoGradient)"
+                        stroke-width="2" />
+                    <polygon points="20,8 32,16 32,24 20,32 8,24 8,16" fill="url(#logoGradient)" opacity="0.3" />
+                    <circle cx="20" cy="20" r="3" fill="url(#logoGradient)" />
+                </svg>
+                <span class="logo-text">CodeStart</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="nav-link">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#features" class="nav-link">Modules</a></li>
+                <li><a href="#contact" class="nav-link">A.i</a></li>
+                <li><a href="https://codestart.42web.io/" class="nav-link" target="_blank">Quiz</a></li>
+            </ul>
+            <div class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="text-rotator">
+                <div class="text-set active">
+                    <h1 class="glitch-text" data-text="BEYOND LIMITS">BEYOND LIMITS</h1>
+                    <p class="subtitle">Where technology meets infinite possibilities</p>
+                </div>
+                <div class="text-set">
+                    <h1 class="glitch-text" data-text="ELECTRIC DREAMS">ELECTRIC DREAMS</h1>
+                    <p class="subtitle">Powering tomorrow's digital revolution today</p>
+                </div>
+                <div class="text-set">
+                    <h1 class="glitch-text" data-text="FUTURE IS NOW">CodeStart</h1>
+                    <p class="subtitle">Learning website for ict students</p>
+                </div>
+            </div>
+        </div>
+        <div class="cta-container">
+            <a href="#about" class="cta-button cta-primary">Get Started</a>
+            <a href="#features" class="cta-button cta-secondary">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Features Section with Tabs -->
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2 class="section-title">About CodeStart</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h2>Learning is fun at CodeStart</h2>
+                <p>At CodeStart, we're not just building technology – we're crafting the future. Our mission is to
+                    bridge the gap between human potential and digital innovation, creating solutions that empower
+                    individuals and transform industries.</p>
+                <p>Founded by visionaries who saw beyond the limitations of current technology, CodeStart represents a
+                    quantum leap in digital infrastructure. We combine cutting-edge research with practical applications
+                    to deliver solutions for learner to understand what ict strand is about.</p>
+                <p>Learn here as we redefine what's possible in the digital age. The future isn't something that happens
+                    to us – it's something we create together.</p>
+            </div>
+            <div class="about-visual">
+                <div class="about-graphic"></div>
+            </div>
+        </div>
+
+        <!-- Second row with reversed layout -->
+        <div class="about-content" style="margin-top: 80px;">
+            <div class="about-visual">
+                <div class="about-graphic-alt">
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                    <div class="hexagon"></div>
+                </div>
+            </div>
+            <div class="about-text">
+                <h2>Innovation at Every Level</h2>
+                <p>Our commitment to excellence drives us to push boundaries and challenge conventions. With a team of
+                    world-class engineers, designers, software enginners and visionaries, we're creating solutions that
+                    not only meet today's needs but anticipate tomorrow's challenges.</p>
+                <p>From quantum computing to neural networks, from blockchain to AI, we're at the forefront of every
+                    technological revolution. Our integrated approach ensures that each innovation builds upon the last,
+                    creating a synergy that amplifies our impact.</p>
+                <p>Experience the power of true digital transformation. With CodeStart you're not just adopting
+                    technology – you're embracing a philosophy of continuous evolution and limitless possibility.</p>
+            </div>
+        </div>
+    </section>
+    <section class="features" id="features">
+        <h2 class="section-title">ALL MODULES</h2>
+        <div class="features-container">
+            <div class="feature-tabs">
+                <div class="tab-item active" data-tab="performance">
+                    <span class="tab-icon">📍</span>
+                    <span>QUARTER 1</span>
+                </div>
+                <div class="tab-item" data-tab="network">
+                    <span class="tab-icon">📍</span>
+                    <span>QUARTER 2</span>
+                </div>
+                <div class="tab-item" data-tab="security">
+                    <span class="tab-icon">📍</span>
+                    <span>QUARTER 3</span>
+                </div>
+                <div class="tab-item" data-tab="analytics">
+                    <span class="tab-icon">📍</span>
+                    <span>QUARTER 4</span>
+                </div>
+                <div class="tab-item" data-tab="integration">
+                    <span class="tab-icon">📍</span>
+                    <span>GRADE 12 MODULES</span>
+                </div>
+            </div>
+            <div class="feature-content">
+                <div class="content-panel active" id="performance">
+                    <h3>QUARTER 1 MODULES</h3>
+                    <p>To understand the different types of computers and how they are used in our daily lives, from
+                        supercomputers that solve complex problems to personal computers that we use at home and in
+                        school, click the button below to begin learning more about their features, functions, and
+                        importance.</p>
+                    <ul class="nav" id="navLinks">
+                        <li><a href="https://drive.google.com/drive/folders/1Qrd4WFSEQWJE0NjWDb03EMKivbXz3VF1?sort=13&direction=a"
+                                target="_blank" class="nav-link">click here</a></li>
+                    </ul>
+                </div>
+                <div class="content-panel" id="security">
+                    <h3>QUARTER 3 MODULES</h3>
+                    <p>Grade 11 Quarter 3 Computer Systems Servicing modules focus on setting up computer networks,
+                        installing network devices and cabling, configuring network services, and performing network
+                        troubleshooting and maintenance.
+                    <ul class="nav" id="navLinks">
+                        <li><a href="https://drive.google.com/drive/folders/1q5d1F_oLlFdI_rpkYnubXxQ1fPgBIK03"
+                                target="_blank" class="nav-link">click here</a></li>
+                    </ul>
+                </div>
+                <div class="content-panel" id="network">
+                    <h3>QUARTER 2 MODULES</h3>
+                    <p>Grade 11 Quarter 2 Computer Systems Servicing modules cover computer operating systems, including
+                        installation, configuration, file management, basic commands, and maintenance procedures for
+                        Windows, macOS, and Linux. Click the button to learn about the all operating systems</p>
+                    <ul class="nav" id="navLinks">
+                        <li><a href="https://drive.google.com/drive/folders/10uXtDA05fjETtzMbsovkN6n-09SVfW99"
+                                target="_blank" class="nav-link">click here</a></li>
+                    </ul>
+                </div>
+                <div class="content-panel" id="analytics">
+                    <h3>QUARTER 4 MODULES</h3>
+                    <p>Grade 11 4th quarter Computer Systems Servicing modules cover configuring computer systems
+                        effectively, performing preventive maintenance, applying OHS principles, conducting testing and
+                        diagnostics, and occupational health and safety procedures. Click the button to learn the router
+                        configuration, and setting up the switch and patch pannel.</p>
+                    <ul class="nav" id="navLinks">
+                        <li><a href="https://drive.google.com/drive/folders/1iy8aUxjTZXuCOCOPg4-q4RgVZSNi0uFn"
+                                target=" _blank" class="nav-link"">click here</a></li>
+                </ul>
+            </div>
+            <div class=" content-panel" id="integration">
+                                <h3>GRADE 12 MODULES</h3>
+                                <p>Grade 12 Computer Systems Servicing modules encompass advanced network configuration,
+                                    server setup and maintenance, cybersecurity fundamentals, advanced diagnostics and
+                                    repair, system integration projects, work immersion preparation, and culminating
+                                    competencies for NC II certification. Click more.
+                                </p>
+                                <ul class="nav" id="navLinks">
+                                    <li><a href="https://drive.google.com/drive/mobile/folders/1yVrQZp7xlEEP5Hmli85eHxgzLFYKbrS7/17PxAtFrq-L_R8tSw7Ssxu8lBRl5VYjx1/1xtZPapdPCI39rT8azIe1B-FI4DNyy04_/15A9VK7eo8tKHmzJegdu93Jh43XWIyS_i?usp=sharing&fbclid=IwY2xjawQRHoZleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR6SxJ3MzFfQW5Mjm9ByU6LDRjQip1yR7nQRKZ_JYO2qATz0C7dl-7-TESNLBw_aem_6IrnfWfIZnpEk3nmiA7CMg&sort=13&direction=a"
+                                            target="_blank" class="nav-link">QUARTER 1
+                                        </a></li>
+                                    <li><a href="https://drive.google.com/drive/mobile/folders/1wgg7NxEClWrxqxPxTd-bBuVBp-cqv026/1sD0QJtuats77to9kntt6K82ddM8MTQwf?usp=sharing&fbclid=IwY2xjawQRHgtleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR6uBxVamqEX2Oy5WgfgG1vlAAheN1atzsL-G-k1YT6HbbUaTcBOIwhS-JX8rQ_aem_LntvwAxdH5Nw849ALE_hxA&sort=13&direction=a"
+                                            target="_blank" class="nav-link">QUARTER 2
+                                        </a></li>
+                                    <li><a href="https://drive.google.com/drive/mobile/folders/1jQ2kKpKNoTpZXRUVVZju5-JSTWpqyVG1/10p9XPc5B_HnHtR-Zn2deAjuT-Bu28xbB/1u1_C06HCSkC-o89yBiEGUsJmi6bL1Pv1?usp=sharing&fbclid=IwY2xjawQRHutleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR60A-bJ8sgqqY2xuMnpc0kl14yNFIpbClNaD13AuPP8wZVPcGysZUwaZLGNMQ_aem_h6Z8iceqv0iuwqw3VKfsmA&sort=13&direction=a"
+                                            target="_blank" class="nav-link">QUARTER 3
+                                        </a></li>
+                                    <li><a href="https://drive.google.com/drive/mobile/folders/1oE1AHEa1IeQ4SQqJX0zwOqn9WpaS-1Dw/1arfLh8TOx8jUkmLrOgdTI7M7tMe4Xby0/1wtORDiMtRIC904JoP_tkPgyxaRx_doXD?usp=sharing&fbclid=IwY2xjawQRHtJleHRuA2FlbQIxMQBzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR7eqqKOTH6WzI8_kJG8XrjevD8T0i5WfTzmC26EMd8GsXvfvSngW-2f8P7g1A_aem_i9LHIg0t867rNKuyRcM5Wg&sort=13&direction=a"
+                                            target="_blank" class="nav-link">QUARTER 4
+                                        </a></li>
+                                </ul>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <h2 class="section-title">A.i Assistant</h2>
+        <div class="contact-container">
+            <div class="contact-form">
+                <form id="contactForm">
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <h3>AI Assistant</h3>
+                        </div>
+                        <div class="chat-body" id="chat-body">
+                            <div class="message bot-message">Hello! I'm your AI assistant powered by DeepSeek. How can I
+                                help you today?</div>
+                        </div>
+                        <div class="input-container">
+                            <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+                            <button id="send-btn">Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="contact-info">
+                <h3>About the A.I assistant</h3>
+                <div class="info-item">
+                    <div class="info-icon">⚡</div>
+                    <div class="info-details">
+                        <h4>About the A.I assistant</h4>
+                        <p>An AI Assistant is a smart tool that helps people by answering questions. </p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">📱</div>
+                    <div class="info-details">
+                        <h4>Fast replies</h4>
+                        <p>The A.I assistant can solve the problem in seconds!</p>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">📍</div>
+                    <div class="info-details">
+                        <h4>Try it!</h4>
+                        <p>Try the A.I assistant power by deepseek!</p>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <div class="map-placeholder">
+                        <p>At CodeStar</p>
+                        <p style="font-size: 0.9rem; margin-top: 10px;">We build the future!</p>
+                    </div>
+                    <div class="map-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section>
+
+
+        <div class="carousel-container">
+            <div class="carousel-track">
+                <!-- Original Items -->
+                <div class="carousel-item">
+                    <div class="item-icon">🚀</div>
+                    <div class="item-title">Innovation</div>
+                    <div class="item-subtitle">Leading the future</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">💡</div>
+                    <div class="item-title">Creativity</div>
+                    <div class="item-subtitle">Thinking outside the box</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🎯</div>
+                    <div class="item-title">Precision</div>
+                    <div class="item-subtitle">Perfect execution</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🌟</div>
+                    <div class="item-title">Excellence</div>
+                    <div class="item-subtitle">Quality in everything</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">⚡</div>
+                    <div class="item-title">super fast a.i assistant</div>
+                    <div class="item-subtitle">Fast talking speed</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🎨</div>
+                    <div class="item-title">learning</div>
+                    <div class="item-subtitle">learning is fun</div>
+                </div>
+
+                <!-- Duplicated Items for Seamless Loop -->
+                <div class="carousel-item">
+                    <div class="item-icon">🚀</div>
+                    <div class="item-title">Innovation</div>
+                    <div class="item-subtitle">Leading the future</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">💡</div>
+                    <div class="item-title">Creativity</div>
+                    <div class="item-subtitle">Thinking outside the box</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🎯</div>
+                    <div class="item-title">Precision</div>
+                    <div class="item-subtitle">Perfect execution</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🌟</div>
+                    <div class="item-title">Excellence</div>
+                    <div class="item-subtitle">Quality in everything</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">⚡</div>
+                    <div class="item-title">super fast a.i assistant</div>
+                    <div class="item-subtitle">Fast talking speed</div>
+                </div>
+                <div class="carousel-item">
+                    <div class="item-icon">🎨</div>
+                    <div class="item-title">learnings</div>
+                    <div class="item-subtitle">learning is fun!</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#privacy">Privacy Policy</a>
+                <a href="#terms">Terms of Service</a>
+                <a href="#careers">Careers</a>
+            </div>
+            <p class="copyright">© 2026 CodeStart. All rights reserved. Building tomorrow, today. | Design: <a
+                    href="https://github.com/carloooi" target="_blank" rel="nofollow noopener">Carlooi</a></p>
+        </div>
+    </footer>
+    <script src="templatemo-electric-scripts.js"></script>
+
+    <script>
+
+        const chatBody = document.getElementById('chat-body');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+        const minimizeBtn = document.getElementById('minimize-btn');
+        const closeBtn = document.getElementById('close-btn');
+        let isMinimized = false;
+
+        // API Configuration
+        const API_KEY = "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";
+        const API_URL = "https://openrouter.ai/api/v1/chat/completions";
+        const MODEL = "arcee-ai/trinity-large-preview:free";
+
+        // Conversation history
+        let conversationHistory = [
+            {
+                role: "system",
+                content: "You are a helpful AI assistant. Be friendly, concise, and helpful."
+            }
+        ];
+
+        function addMessage(text, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = text;
+            chatBody.appendChild(messageDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.classList.add('message', 'bot-message', 'typing-indicator');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            `;
+            chatBody.appendChild(typingDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typing-indicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function getAIResponse(userMessage) {
+            // Add user message to history
+            conversationHistory.push({
+                role: "user",
+                content: userMessage
+            });
+
+            showTypingIndicator();
+            sendBtn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${API_KEY}`,
+                        "HTTP-Referer": window.location.href,
+                        "X-Title": "AI Chatbot",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: MODEL,
+                        messages: conversationHistory
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                const aiMessage = data.choices[0].message.content;
+
+                // Add AI response to history
+                conversationHistory.push({
+                    role: "assistant",
+                    content: aiMessage
+                });
+
+                hideTypingIndicator();
+                addMessage(aiMessage);
+            } catch (error) {
+                hideTypingIndicator();
+                console.error("Error fetching AI response:", error);
+                addMessage("Sorry, I encountered an error. Please try again.");
+            } finally {
+                sendBtn.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        function handleUserInput() {
+            const message = userInput.value.trim();
+            if (message) {
+                addMessage(message, true);
+                getAIResponse(message);
+                userInput.value = '';
+            }
+        }
+
+        // Event Listeners
+        sendBtn.addEventListener('click', handleUserInput);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleUserInput();
+        });
+
+        minimizeBtn.addEventListener('click', () => {
+            isMinimized = !isMinimized;
+            chatBody.classList.toggle('hidden');
+            document.querySelector('.input-container').classList.toggle('hidden');
+            minimizeBtn.textContent = isMinimized ? '+' : '−';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            document.querySelector('.chat-container').style.display = 'none';
+        });
+
+        // Focus input on load
+        userInput.focus();
+    </script>
+</body>
+
+</html>
